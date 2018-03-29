@@ -1,6 +1,9 @@
 from django.contrib import messages
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django_datatables_view.base_datatable_view import BaseDatatableView
+from django.utils.html import escape
+from django.utils import formats
 
 from .forms import AuctionForm
 from .models import Auction
@@ -10,7 +13,8 @@ from .models import Completion
 def index(request):
     return render(
         request,
-        'index.html'
+        'index.html',
+        {'completeon': Completion.objects.all()}
     )
 
 
@@ -46,3 +50,39 @@ def new(request):
         'new.html',
         {'form': form}
     )
+
+
+class CompletionTableJson(BaseDatatableView):
+    model = Completion
+
+    # define the columns that will be returned
+    columns = ['id', 'status', 'total', 'processed', 'auction', 'category', 'created_at', 'updated_at']
+
+    # define column names that will be used in sorting
+    # order is important and should be same as order of columns
+    # displayed by datatables. For non sortable columns use empty
+    # value like ''
+    order_columns = ['id', 'status', 'total', 'processed', 'auction', 'category', 'created_at', 'updated_at']
+
+    # set max limit of records returned, this is used to protect our site if someone tries to attack our site
+    # and make it return huge amount of data
+    max_display_length = 500
+
+    def render_column(self, row, column):
+        # We want to render user as a custom column
+        if column == 'created_at':
+            return formats.date_format(row.created_at, "SHORT_DATETIME_FORMAT")
+        elif column == 'updated_at':
+            return formats.date_format(row.created_at, "SHORT_DATETIME_FORMAT")
+        else:
+            return super().render_column(row, column)
+
+    def filter_queryset(self, qs):
+        # use parameters passed in GET request to filter queryset
+
+        # simple example:
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(category__title__istartswith=search)
+
+        return qs

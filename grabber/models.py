@@ -50,6 +50,7 @@ class Completion(models.Model):
         ('n', 'New'),
         ('p', 'In process'),
         ('d', 'Done'),
+        ('f', 'Failed'),
     )
     status = models.CharField(max_length=1, choices=STATUS, default='n')
     total = models.PositiveSmallIntegerField(null=True)

@@ -1,16 +1,13 @@
-<html>
+{% extends 'bootstrap4/bootstrap4.html' %}
+{% load bootstrap4 %}
 
-	<head>
-	    <meta name="viewport" content="width=device-width,initial-scale=1">
-	    <meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="{{static_files}}/numis_admin.css">
-		{% block title %}<title>Tracker</title>{% endblock %}
-		{% load static %}
-		<link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  	</head>
+{% block bootstrap4_title %}{% block title %}{% endblock %} - Tracker{% endblock %}
 
-    <body>
-      {% block content %}{% endblock %}
-	</body>
+{% block bootstrap4_content %}
+    <div class="container">
+        {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
 
-</html>
+        {% block content %}(no content){% endblock %}
+    </div>
+
+{% endblock %}
