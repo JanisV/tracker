@@ -1,0 +1,104 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$100000$EnyEZcE7P5CU$1PZgG33ilzXireko2te6rxb3M/3NXBvglj84i+BJxm0=",
+        "is_superuser": true,
+        "username": "admin",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2018-03-28T12:06:11.121Z"
+    }
+  },
+  {
+    "model": "grabber.site",
+    "pk": 1,
+    "fields": {
+      "title": "АукционЪ.СПб",
+      "url": "http://auction.spb.ru/",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "grabber.category",
+    "pk": 1,
+    "fields": {
+      "title": "Монеты России до 1917 года (золото, серебро)",
+      "site": "1",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "grabber.category",
+    "pk": 2,
+    "fields": {
+      "title": "Монеты России до 1917 года (медь)",
+      "site": "1",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "grabber.category",
+    "pk": 3,
+    "fields": {
+      "title": "Монеты РСФСР, СССР, России",
+      "site": "1",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "grabber.category",
+    "pk": 4,
+    "fields": {
+      "title": "Допетровские монеты",
+      "site": "1",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "grabber.category",
+    "pk": 5,
+    "fields": {
+      "title": "Боны",
+      "site": "1",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "grabber.category",
+    "pk": 6,
+    "fields": {
+      "title": "Монеты антика, средневековье",
+      "site": "1",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "grabber.category",
+    "pk": 7,
+    "fields": {
+      "title": "Монеты иностранные",
+      "site": "1",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "grabber.category",
+    "pk": 8,
+    "fields": {
+      "title": "Награды, медали, знаки, жетоны, пряжки и т.д.",
+      "site": "1",
+      "created_at": "2018-03-28T00:00:00Z",
+      "updated_at": "2018-03-28T00:00:00Z"
+    }
+  }
+]
