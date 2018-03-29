@@ -28,6 +28,7 @@ class Auction(models.Model):
     class Meta:
         unique_together = ('site', 'number')
         ordering = ('number',)
+        get_latest_by = 'number'
 
 
 class Category(models.Model):
