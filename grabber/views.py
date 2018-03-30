@@ -8,6 +8,7 @@ from django.utils import formats
 from .forms import AuctionForm
 from .models import Auction
 from .models import Completion
+from .grabber import Grabber
 
 
 def index(request):
@@ -86,3 +87,12 @@ class CompletionTableJson(BaseDatatableView):
             qs = qs.filter(category__title__istartswith=search)
 
         return qs
+
+
+def run(request):
+    competeon = Completion.objects.filter(status='n').first()
+    if competeon:
+        grabber = Grabber(competeon)
+        grabber.run()
+
+    return redirect('index')

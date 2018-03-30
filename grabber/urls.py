@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^new/$', views.new, name='new'),
     url(r'^table/$', views.CompletionTableJson.as_view(), name='completeon_table_json'),
+    url(r'^run/$', views.run, name='run'),
 ]
