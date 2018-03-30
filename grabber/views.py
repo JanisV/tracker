@@ -74,7 +74,7 @@ class CompletionTableJson(BaseDatatableView):
         if column == 'created_at':
             return formats.date_format(row.created_at, "SHORT_DATETIME_FORMAT")
         elif column == 'updated_at':
-            return formats.date_format(row.created_at, "SHORT_DATETIME_FORMAT")
+            return formats.date_format(row.updated_at, "SHORT_DATETIME_FORMAT")
         else:
             return super().render_column(row, column)
 

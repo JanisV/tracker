@@ -8,6 +8,10 @@ from django.db import transaction
 from .models import Raw
 
 
+class NotDoneYetError(Exception):
+    pass
+
+
 class Grabber():
 
     def __init__(self, completeon):
@@ -58,12 +62,12 @@ class Grabber():
         with request.urlopen(url) as c:
             return c.read().decode('windows-1251', 'ignore')
 
-        if len(url) > 35:
-            with open("D:/OpenNumismat/tracker/test/АукционЪ.СПб - Петербургский нумизматический аукцион (монеты, боны, жетоны, медали).html", 'r') as f:
-                return f.read()
-        else:
-            with open("D:/OpenNumismat/tracker/test/Лот монет 10,15,20 копеек (9 штук) 1868-1913 г. на АукционЪ.СПб - Петербургский нумизматический аукцион (монеты, боны, жетоны, медали).html", 'r') as f:
-                return f.read()
+#        if len(url) > 35:
+#            with open("D:/OpenNumismat/tracker/test/АукционЪ.СПб - Петербургский нумизматический аукцион (монеты, боны, жетоны, медали).html", 'r') as f:
+#                return f.read()
+#        else:
+#            with open("D:/OpenNumismat/tracker/test/Лот монет 10,15,20 копеек (9 штук) 1868-1913 г. на АукционЪ.СПб - Петербургский нумизматический аукцион (монеты, боны, жетоны, медали).html", 'r') as f:
+#                return f.read()
 
     def get_image(self, url):
         with request.urlopen(url) as c:
@@ -99,9 +103,20 @@ class Grabber():
         table = html.cssselect('body > table > tr')[2]
         table = table.cssselect('td')[1]
         table = table.cssselect('table > tr > td')[0]
+        if table.text_content().find("Торги по лоту завершились") < 0:
+            raise NotDoneYetError()
+
         part = lxml.html.tostring(table, encoding='unicode')
         Raw.objects.create(url=url, html=part, auction=self.completeon.auction,
                            category=self.completeon.category)
+        if self.completeon.auction.date is None:
+            content = table.cssselect('b')[0].text_content()
+            # Convert '12:00:00 05-12-2007' to '05-12-2007'
+            date = datetime.strptime(content, '%H:%M:%S %d-%m-%Y')
+            self.completeon.auction.date = date.strftime('%Y-%m-%d')
+            self.completeon.auction.url = self.auction_url()
+            self.completeon.auction.save()
+
 #        raise Exception()
 
     def parse_list(self, content):
