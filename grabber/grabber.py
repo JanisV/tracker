@@ -1,11 +1,13 @@
+import uuid
 import lxml.html
 from datetime import datetime
 from random import random
 from time import sleep
 from urllib import request
 from django.db import transaction
+from django.core.files.base import ContentFile
 
-from .models import Raw
+from .models import Raw, PhotoRaw, Photo
 
 
 class NotDoneYetError(Exception):
@@ -31,11 +33,11 @@ class Grabber():
             self.completeon.processed = 0
             self.completeon.save()
 
-        for url in coin_urls[0:5]:
+        for url in coin_urls:
             try:
                 self.get_coin(url)
             except Exception as e:
-                self.completeon.status = 'e'
+                self.completeon.status = 'f'
                 self.completeon.save()
                 raise e
             else:
@@ -62,20 +64,10 @@ class Grabber():
         with request.urlopen(url) as c:
             return c.read().decode('windows-1251', 'ignore')
 
-#        if len(url) > 35:
-#            with open("D:/OpenNumismat/tracker/test/АукционЪ.СПб - Петербургский нумизматический аукцион (монеты, боны, жетоны, медали).html", 'r') as f:
-#                return f.read()
-#        else:
-#            with open("D:/OpenNumismat/tracker/test/Лот монет 10,15,20 копеек (9 штук) 1868-1913 г. на АукционЪ.СПб - Петербургский нумизматический аукцион (монеты, боны, жетоны, медали).html", 'r') as f:
-#                return f.read()
-
     def get_image(self, url):
         with request.urlopen(url) as c:
             content = c.read()
-
-            f = open('img/image.jpg', 'wb')
-            f.write(content)
-            f.close
+            return content
 
     def get_coin_list(self, auction_url):
         coin_urls = []
@@ -106,18 +98,31 @@ class Grabber():
         if table.text_content().find("Торги по лоту завершились") < 0:
             raise NotDoneYetError()
 
-        part = lxml.html.tostring(table, encoding='unicode')
-        Raw.objects.create(url=url, html=part, auction=self.completeon.auction,
-                           category=self.completeon.category)
         if self.completeon.auction.date is None:
             content = table.cssselect('b')[0].text_content()
             # Convert '12:00:00 05-12-2007' to '05-12-2007'
-            date = datetime.strptime(content, '%H:%M:%S %d-%m-%Y')
+            date = datetime.strptime(content.split()[1], '%d-%m-%Y')
             self.completeon.auction.date = date.strftime('%Y-%m-%d')
             self.completeon.auction.url = self.auction_url()
             self.completeon.auction.save()
 
-#        raise Exception()
+        with transaction.atomic():
+            part = lxml.html.tostring(table, encoding='unicode')
+            raw = Raw.objects.create(url=url, html=part,
+                                     auction=self.completeon.auction,
+                                     category=self.completeon.category)
+            links = table.cssselect('a')
+            for num, link in enumerate(links):
+                url = link.attrib['href']
+                if self.base_url not in url:
+                    url = self.base_url + url
+
+                photo = Photo(url=url, position=num)
+                img_data = ContentFile(self.get_image(url))
+                file = str(uuid.uuid4()) + '.jpg'
+                photo.file.save(file, img_data)
+
+                PhotoRaw.objects.create(raw=raw, photo=photo)
 
     def parse_list(self, content):
         coin_urls = []

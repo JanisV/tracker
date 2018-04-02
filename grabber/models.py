@@ -1,4 +1,6 @@
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.utils._os import safe_join
 
 
 class Site(models.Model):
@@ -52,6 +54,7 @@ class Completion(models.Model):
         ('d', 'Done'),
         ('f', 'Failed'),
     )
+
     status = models.CharField(max_length=1, choices=STATUS, default='n')
     total = models.PositiveSmallIntegerField(null=True)
     processed = models.PositiveSmallIntegerField(null=True)
@@ -78,6 +81,36 @@ class Raw(models.Model):
     auction = models.ForeignKey('Auction', on_delete=models.PROTECT)
     category = models.ForeignKey('Category', on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
+    photos = models.ManyToManyField('Photo', through='PhotoRaw')
 
     def __str__(self):
         return self.url
+
+
+class BigStorage(FileSystemStorage):
+
+    def _save(self, name, content):
+        if self.exists(name):
+            raise
+
+        return super()._save(name, content)
+
+    def path(self, name):
+        return safe_join(self.location, name[0:2], name[2:4], name)
+
+
+class Photo(models.Model):
+    SIZE = (
+        ('o', 'Original'),
+        ('t', 'Thumbnail'),
+    )
+
+    url = models.URLField(unique=True)
+    file = models.ImageField(storage=BigStorage(location='images'))
+    position = models.PositiveSmallIntegerField()
+    size = models.CharField(max_length=1, choices=SIZE, default='o')
+
+
+class PhotoRaw(models.Model):
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE)
+    raw = models.ForeignKey(Raw, on_delete=models.CASCADE)
