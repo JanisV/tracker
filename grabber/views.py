@@ -4,10 +4,12 @@ from django.shortcuts import redirect
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.utils.html import escape
 from django.utils import formats
+from easy_thumbnails.files import get_thumbnailer
 
 from .forms import AuctionForm
 from .models import Auction
 from .models import Completion
+from .models import Raw
 from .grabber import Grabber
 
 
@@ -87,6 +89,37 @@ class CompletionTableJson(BaseDatatableView):
             qs = qs.filter(category__title__istartswith=search)
 
         return qs
+
+
+def raw(request):
+    return render(
+        request,
+        'raw.html'
+    )
+
+
+class RawTableJson(BaseDatatableView):
+    model = Raw
+
+    columns = ['url', 'auction', 'category', 'photo']
+    order_columns = ['url', 'auction', 'category', '']
+
+    max_display_length = 500
+
+    def render_column(self, row, column):
+        # We want to render user as a custom column
+        if column == 'photo':
+            photos = row.photos.all()
+            if photos:
+                try:
+                    thumb_url = get_thumbnailer(photos[0].file)['thumbnail'].url
+                except:
+                    thumb_url = photos[0].file.url
+                return [thumb_url, photos[0].file.url]
+            else:
+                return ''
+        else:
+            return super().render_column(row, column)
 
 
 def run(request):

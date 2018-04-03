@@ -33,7 +33,7 @@ class Grabber():
             self.completeon.processed = 0
             self.completeon.save()
 
-        for url in coin_urls:
+        for url in coin_urls[5:8]:
             try:
                 self.get_coin(url)
             except Exception as e:

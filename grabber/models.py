@@ -98,6 +98,10 @@ class BigStorage(FileSystemStorage):
     def path(self, name):
         return safe_join(self.location, name[0:2], name[2:4], name)
 
+    def url(self, name):
+        name = '/'.join((name[0:2], name[2:4], name))
+        return super().url(name)
+
 
 class Photo(models.Model):
     SIZE = (
@@ -106,7 +110,7 @@ class Photo(models.Model):
     )
 
     url = models.URLField(unique=True)
-    file = models.ImageField(storage=BigStorage(location='images'))
+    file = models.ImageField(storage=BigStorage())
     position = models.PositiveSmallIntegerField()
     size = models.CharField(max_length=1, choices=SIZE, default='o')
 

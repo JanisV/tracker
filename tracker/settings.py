@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'grabber.apps.GrabberConfig',
     'django_tables2',
     'bootstrap4',
+    'easy_thumbnails',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +122,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/grabber/images/'
+MEDIA_ROOT = 'images/'
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'thumbnail': {'size': (50, 50), 'crop': True},
+    },
+}
