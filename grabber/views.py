@@ -111,11 +111,22 @@ class RawTableJson(BaseDatatableView):
         if column == 'photo':
             photos = row.photos.all()
             if photos:
+                orig1_url = photos[0].file.url
                 try:
-                    thumb_url = get_thumbnailer(photos[0].file)['thumbnail'].url
+                    thumb1_url = get_thumbnailer(photos[0].file)['thumb'].url
                 except:
-                    thumb_url = photos[0].file.url
-                return [thumb_url, photos[0].file.url]
+                    thumb1_url = orig1_url
+                if len(photos) > 1:
+                    orig2_url = photos[1].file.url
+                    try:
+                        thumb2_url = get_thumbnailer(photos[1].file)['thumb'].url
+                    except:
+                        thumb2_url = orig2_url
+                else:
+                    orig2_url = ""
+                    thumb2_url = ""
+
+                return [thumb1_url, orig1_url, thumb2_url, orig2_url]
             else:
                 return ''
         else:

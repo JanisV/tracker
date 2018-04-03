@@ -37,6 +37,7 @@ $(document).ready(function() {
     $('#raw_table').DataTable( {
     	"orderMulti": true,
     	"order": [],
+    	"searching": false,
         "lengthMenu": [ 50, 100, 150 ],
         "processing": true,
         "serverSide": true,
@@ -52,7 +53,8 @@ $(document).ready(function() {
             "targets": 3,
             "render": function ( data, type, row, meta ) {
                 var imgLink = row[3];                   
-                return '<a href="' + imgLink[1] + '" target="_blank"><img src="' + imgLink[0] + '" width="50"></img></a>';
+                return '<a href="' + imgLink[1] + '" target="_blank"><img src="' + imgLink[0] + '" width="50"></img></a>' +
+                       '<a href="' + imgLink[3] + '" target="_blank"><img src="' + imgLink[2] + '" width="50"></img></a>';
             }
         }]        
     } );

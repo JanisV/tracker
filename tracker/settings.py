@@ -127,6 +127,6 @@ MEDIA_ROOT = 'images/'
 
 THUMBNAIL_ALIASES = {
     '': {
-        'thumbnail': {'size': (50, 50), 'crop': True},
+        'thumb': {'size': (50, 50), 'crop': True},
     },
 }

@@ -86,6 +86,9 @@ class Raw(models.Model):
     def __str__(self):
         return self.url
 
+    class Meta:
+        ordering = ('-created_at',)
+
 
 class BigStorage(FileSystemStorage):
 
