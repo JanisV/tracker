@@ -22,10 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '_q^ooghicat3_atmk4^qph(pg_sp8c6!v0wt5voqge(tu8@xpn'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -74,17 +70,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'tracker.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -123,7 +108,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/grabber/images/'
-MEDIA_ROOT = 'images/'
 
 THUMBNAIL_ALIASES = {
     '': {
